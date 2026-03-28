@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEOW Money System - Full Sound HQ</title>
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/616/616430.png">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/616/616430.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=Poppins:wght@400;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #000000; --card: #111111; --accent: #ffcc00; --text: #ffffff; --gray: #bbbbbb; --border: #333333; --font: 'Segoe UI', Tahoma, sans-serif;
+            --shd-main: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        
+        /* THEMES */
+        body.theme-cyberpunk { --bg: #0d0221; --card: #1a0842; --accent: #ff00ff; --border: #4a00e0; --text: #ffffff; }
+        body.theme-minimal { --bg: #f4f4f4; --card: #ffffff; --accent: #222222; --text: #111111; --border: #dddddd; }
+        
+        body.theme-anime { 
+            --bg: #0b0b0e; --card: rgba(25, 25, 35, 0.9); --accent: #ff6600; --border: #ff6600; --text: #ffffff;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath d='M40 10l5 15h15l-12 9 5 15-13-10-13 10 5-15-12-9h15z' fill='%23ff6600' fill-opacity='0.05'/%3E%3C/svg%3E") !important;
+        }
+        body.theme-anime .cutoff-section { border-left: 4px solid var(--accent); box-shadow: 0 0 15px rgba(255, 102, 0, 0.2); }
+        body.theme-anime .header { border-radius: 0 20px 0 20px; border: 2px solid var(--accent); }
+
+        body { 
+            font-family: var(--font); background-color: var(--bg); color: var(--text);
+            padding: 10px; margin: 0; transition: all 0.3s ease;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ctext y='30' font-size='20' opacity='0.08'%3E🐈%3C/text%3E%3Ctext x='50' y='80' font-size='18' opacity='0.05'%3E🐾%3C/text%3E%3Ctext x='70' y='40' font-size='15' opacity='0.07'%3E🐱%3C/text%3E%3C/svg%3E");
+        }
+        
+        .header { text-align: center; margin-bottom: 5px; border-bottom: 2px solid var(--accent); padding-bottom: 8px; background: rgba(0,0,0,0.9); border-radius: 8px; position: relative; }
+        .header h1 { color: var(--accent); margin: 0; font-size: 16px; letter-spacing: 1px; font-weight: 900; }
+        .settings-gear { position: absolute; right: 10px; top: 12px; cursor: pointer; font-size: 20px; opacity: 0.8; }
+        .cat-bar { display: flex; justify-content: space-around; font-size: 15px; margin-bottom: 3px; }
+
+        .month-container { text-align: center; margin: 12px 0; }
+        .month-container select { 
+            background: var(--card); color: var(--accent); border: 1px solid var(--accent); 
+            padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 14px;
+            text-align: center; cursor: pointer; width: 85%;
+        }
+
+        .main-container { display: flex; gap: 8px; width: 100%; align-items: flex-start; }
+        .cutoff-section { background: var(--card); border-radius: 12px; padding: 10px; flex: 1; border: 1px solid var(--border); min-height: 520px; box-shadow: var(--shd-main); opacity: 0.98; }
+        .cutoff-header { border-bottom: 1px solid var(--accent); margin-bottom: 10px; padding-bottom: 5px; text-align: center; display: flex; justify-content: space-between; align-items: center; }
+        .cutoff-header h2 { font-size: 10px; margin: 0; color: var(--accent); text-transform: uppercase; }
+        
+        .status-badge { font-size: 7px; padding: 2px 5px; border-radius: 4px; background: #000; color: var(--accent); border: 1px solid var(--accent); font-weight: bold; }
+        .add-btn { background: var(--accent); color: black; border: none; border-radius: 50%; width: 22px; height: 22px; font-weight: bold; cursor: pointer; font-size: 14px; flex-shrink: 0; }
+
+        .item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); align-items: center; }
+        .item-left { display: flex; align-items: center; gap: 8px; flex: 1; }
+        input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0; }
+        .item-name { font-size: 11px; font-weight: 600; color: var(--text); }
+        input[type="checkbox"]:checked + .item-name { text-decoration: line-through; opacity: 0.5; }
+        .amount-display { font-family: 'Courier New', monospace; font-weight: bold; color: var(--accent); font-size: 10px; margin-left: auto; margin-right: 5px; }
+        .edit-btn { background: none; border: none; color: #888; font-size: 12px; cursor: pointer; padding: 4px; }
+
+        .summary-title { font-size: 9px; color: var(--accent); text-align: center; margin-top: 15px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; }
+        .summary-container { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; background: rgba(0,0,0,0.9); padding: 10px; border-radius: 12px; border: 1px solid var(--accent); }
+        .summary-box { background: var(--card); padding: 8px; border-radius: 10px; border-top: 2px solid var(--accent); text-align: center; }
+        .summary-box h3 { font-size: 8px; color: #aaaaaa; margin: 0 0 3px 0; text-transform: uppercase; }
+        .summary-box .val { font-size: 13px; font-weight: bold; color: var(--accent); }
+
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 99; }
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card); padding: 20px; border: 2px solid var(--accent); border-radius: 12px; z-index: 100; width: 85%; box-sizing: border-box; }
+        .modal input, .modal select { width: 100%; padding: 12px; margin: 8px 0; background: #222; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; }
+        .btn-full { width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; border: none; margin-top: 10px; cursor: pointer; }
+
+        /* CONFETTI ANIMATION */
+        .confetti { position: fixed; font-size: 20px; pointer-events: none; z-index: 999; animation: fall 3s linear forwards; }
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="cat-bar">🐱 🐾 🐈 🐾 😺</div>
+        <h1>MEOW MONEY SYSTEM</h1>
+        <div class="settings-gear" onclick="openModal('settingsModal')">⚙️</div>
+    </div>
+
+    <div class="month-container">
+        <select id="monthPick" onchange="switchMonth()">
+            <option value="JAN">JANUARY</option><option value="FEB">FEBRUARY</option>
+            <option value="MAR" selected>MARCH</option><option value="APR">APRIL</option>
+            <option value="MAY">MAY</option><option value="JUN">JUNE</option>
+            <option value="JUL">JULY</option><option value="AUG">AUGUST</option>
+            <option value="SEP">SEPTEMBER</option><option value="OCT">OCTOBER</option>
+            <option value="NOV">NOVEMBER</option><option value="DEC">DECEMBER</option>
+        </select>
+    </div>
+
+    <div class="main-container">
+        <div class="cutoff-section">
+            <div class="cutoff-header">
+                <div><h2>5th</h2><span id="stat5" class="status-badge">WAIT...</span></div>
+                <button class="add-btn" onclick="openAdd('list5')">+</button>
+            </div>
+            <div id="list5"></div>
+        </div>
+        <div class="cutoff-section">
+            <div class="cutoff-header">
+                <div><h2>19th</h2><span id="stat19" class="status-badge">WAIT...</span></div>
+                <button class="add-btn" onclick="openAdd('list19')">+</button>
+            </div>
+            <div id="list19"></div>
+        </div>
+    </div>
+
+    <div class="summary-title">🐾 ANNUAL GRAND TOTAL 🐾</div>
+    <div class="summary-container">
+        <div class="summary-box"><h3>Savings 💎</h3><div class="val" id="sumSavings">₱0</div></div>
+        <div class="summary-box"><h3>Business 💼</h3><div class="val" id="sumBiz">₱0</div></div>
+        <div class="summary-box"><h3>Allowance 🥤</h3><div class="val" id="sumAllow">₱0</div></div>
+        <div class="summary-box" style="border-top-color: #ff4d4d;"><h3>Expenses 🔻</h3><div class="val" id="sumExp" style="color:#ff4d4d;">₱0</div></div>
+    </div>
+
+    <button onclick="resetMonth()" style="width:100%; background:none; border:none; color:#666; font-size:10px; margin-top:10px; cursor:pointer;">RESET MONTH 🐈</button>
+
+    <div class="overlay" id="overlay" onclick="closeModals()"></div>
+
+    <div class="modal" id="entryModal">
+        <h3 id="modalTitle" style="color:var(--accent); text-align:center; margin-top:0;">Meow Entry 🐾</h3>
+        <input type="text" id="entryName" placeholder="Item Name">
+        <input type="number" id="entryAmount" placeholder="Amount (₱)">
+        <select id="entryCat">
+            <option value="Bills">Bills</option><option value="Living">Living</option>
+            <option value="Savings">Savings</option><option value="Allowance">Allowance</option>
+            <option value="Business">Business</option>
+        </select>
+        <div style="display:flex; gap:10px;">
+            <button onclick="handleAction()" class="btn-full" style="background:var(--accent); color:black;">SAVE</button>
+            <button onclick="closeModals()" class="btn-full" style="background:#333; color:white;">CANCEL</button>
+        </div>
+        <button id="deleteBtn" onclick="handleDelete()" style="width:100%; margin-top:15px; background:none; border:none; color:#ff4d4d; font-size:11px; display:none; cursor:pointer;">🗑 Remove Item</button>
+    </div>
+
+    <div class="modal" id="settingsModal">
+        <h3 style="color:var(--accent); text-align:center; margin-top:0;">App Settings ⚙️</h3>
+        <label style="font-size:10px;">THEME</label>
+        <select id="setTheme" onchange="applySettings()">
+            <option value="default">Dark (Default)</option>
+            <option value="theme-anime">Anime (Shinobi)</option>
+            <option value="theme-cyberpunk">Cyberpunk</option>
+            <option value="theme-minimal">Light</option>
+        </select>
+        <label style="font-size:10px;">FONT</label>
+        <select id="setFont" onchange="applySettings()"><option value="'Segoe UI'">Standard</option><option value="'Poppins'">Modern</option><option value="'Space Mono'">Retro/Ninja</option></select>
+        <label style="font-size:10px;">INCOME SOUND</label>
+        <select id="setSndInc"><option value="https://assets.mixkit.co/active_storage/sfx/2017/2017-preview.mp3">Chaching 💰</option><option value="https://assets.mixkit.co/active_storage/sfx/1090/1090-preview.mp3">Robot 🤖</option></select>
+        <label style="font-size:10px;">EXPENSE SOUND</label>
+        <select id="setSndExp"><option value="https://assets.mixkit.co/active_storage/sfx/2004/2004-preview.mp3">Register 🖱️</option><option value="https://assets.mixkit.co/active_storage/sfx/1003/1003-preview.mp3">Tech ⚡</option></select>
+        <button onclick="closeModals()" class="btn-full" style="background:var(--accent); color:black;">DONE</button>
+    </div>
+
+    <script>
+        const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+        let curM = localStorage.getItem('last_m') || 'MAR';
+        let data5 = [], data19 = [], context = { lid: null, idx: null, mode: 'add' };
+
+        const def5 = [{ name: "Motor", val: 3400, cat: "Bills", checked: false }, { name: "Kuryente", val: 2000, cat: "Bills", checked: false }, { name: "Grocery", val: 2000, cat: "Living", checked: false }, { name: "Savings", val: 3000, cat: "Savings", checked: false }, { name: "Business Fund", val: 1600, cat: "Business", checked: false }];
+        const def19 = [{ name: "Rent", val: 2500, cat: "Bills", checked: false }, { name: "Internet", val: 1500, cat: "Bills", checked: false }, { name: "Groceries", val: 2000, cat: "Living", checked: false }, { name: "Savings", val: 5000, cat: "Savings", checked: false }, { name: "Business Fund", val: 2300, cat: "Business", checked: false }];
+
+        function applySettings() {
+            const t = document.getElementById('setTheme').value, f = document.getElementById('setFont').value;
+            document.body.className = t === 'default' ? '' : t;
+            document.documentElement.style.setProperty('--font', f);
+            localStorage.setItem('app_theme', t); localStorage.setItem('app_font', f);
+        }
+
+        function playSound(cat) {
+            const isInc = ['Savings', 'Business', 'Allowance'].includes(cat);
+            const url = isInc ? document.getElementById('setSndInc').value : document.getElementById('setSndExp').value;
+            new Audio(url).play();
+            if (window.navigator.vibrate) window.navigator.vibrate(20);
+        }
+
+        function switchMonth() { curM = document.getElementById('monthPick').value; localStorage.setItem('last_m', curM); loadData(); }
+
+        function loadData() {
+            data5 = JSON.parse(localStorage.getItem(`m5_${curM}`)) || JSON.parse(JSON.stringify(def5));
+            data19 = JSON.parse(localStorage.getItem(`m19_${curM}`)) || JSON.parse(JSON.stringify(def19));
+            document.getElementById('monthPick').value = curM; render();
+        }
+
+        function render() {
+            draw('list5', data5); draw('list19', data19); updateMath();
+            localStorage.setItem(`m5_${curM}`, JSON.stringify(data5)); localStorage.setItem(`m19_${curM}`, JSON.stringify(data19));
+        }
+
+        function draw(id, arr) {
+            const cont = document.getElementById(id); cont.innerHTML = "";
+            arr.forEach((item, i) => {
+                cont.innerHTML += `<div class="item"><div class="item-left"><input type="checkbox" ${item.checked?'checked':''} onchange="toggle('${id}', ${i})"><span class="item-name">${item.name}</span></div><span class="amount-display">₱${item.val.toLocaleString()}</span><button class="edit-btn" onclick="openEdit('${id}', ${i})">⚙️</button></div>`;
+            });
+        }
+
+        function toggle(lid, i) {
+            const item = (lid==='list5' ? data5[i] : data19[i]); item.checked = !item.checked;
+            if(item.checked) playSound(item.cat); render();
+        }
+
+        function openAdd(lid) { context={lid, idx:null, mode:'add'}; document.getElementById('modalTitle').innerText="Add Entry"; document.getElementById('entryName').value=""; document.getElementById('entryAmount').value=""; document.getElementById('deleteBtn').style.display="none"; openModal('entryModal'); }
+        function openEdit(lid, i) {
+            context={lid, idx:i, mode:'edit'}; const item = (lid==='list5'?data5[i]:data19[i]);
+            document.getElementById('entryName').value=item.name; document.getElementById('entryAmount').value=item.val; document.getElementById('entryCat').value=item.cat;
+            document.getElementById('modalTitle').innerText="Edit Entry"; document.getElementById('deleteBtn').style.display="block"; openModal('entryModal');
+        }
+
+        function handleAction() {
+            const n = document.getElementById('entryName').value || "Item", v = parseInt(document.getElementById('entryAmount').value) || 0, c = document.getElementById('entryCat').value;
+            const list = context.lid === 'list5' ? data5 : data19;
+            if(context.mode==='add') list.push({name:n, val:v, cat:c, checked:false}); else list[context.idx]={...list[context.idx], name:n, val:v, cat:c};
+            closeModals(); render();
+        }
+
+        function handleDelete() { if(confirm("Delete?")) { (context.lid==='list5'?data5:data19).splice(context.idx,1); closeModals(); render(); } }
+        function openModal(id) { document.getElementById(id).style.display='block'; document.getElementById('overlay').style.display='block'; }
+        function closeModals() { document.querySelectorAll('.modal').forEach(m=>m.style.display='none'); document.getElementById('overlay').style.display='none'; }
+
+        function updateMath() {
+            let g = { Savings:0, Business:0, Allowance:0, Expense:0 };
+            let totalSavingsInMonth = 0;
+            let checkedSavingsInMonth = 0;
+
+            // Para sa current month tracking
+            const checkSavings = (list) => {
+                list.forEach(i => {
+                    if(i.cat === 'Savings') {
+                        totalSavingsInMonth++;
+                        if(i.checked) checkedSavingsInMonth++;
+                    }
+                });
+            };
+            checkSavings(data5); checkSavings(data19);
+
+            // Annual calculations
+            months.forEach(m => {
+                const m5 = JSON.parse(localStorage.getItem(`m5_${m}`)), m19 = JSON.parse(localStorage.getItem(`m19_${m}`));
+                if(m5) m5.forEach(i => { if(i.checked) { if(g[i.cat]!==undefined) g[i.cat]+=i.val; else g.Expense+=i.val; } });
+                if(m19) m19.forEach(i => { if(i.checked) { if(g[i.cat]!==undefined) g[i.cat]+=i.val; else g.Expense+=i.val; } });
+            });
+
+            document.getElementById('sumSavings').innerText="₱"+g.Savings.toLocaleString();
+            document.getElementById('sumBiz').innerText="₱"+g.Business.toLocaleString();
+            document.getElementById('sumAllow').innerText="₱"+g.Allowance.toLocaleString();
+            document.getElementById('sumExp').innerText="₱"+g.Expense.toLocaleString();
+
+            // Pop-up Logic
+            if(totalSavingsInMonth > 0 && totalSavingsInMonth === checkedSavingsInMonth) {
+                triggerSuccess();
+            }
+
+            let r5=20000, r19=20000; data5.forEach(i=>{if(i.checked) r5-=i.val;}); data19.forEach(i=>{if(i.checked) r19-=i.val;});
+            document.getElementById('stat5').innerText = r5<=6600?"DONE ✅":"WAIT...";
+            document.getElementById('stat19').innerText = r19<=10300?"DONE ✅":"WAIT...";
+        }
+
+        function triggerSuccess() {
+            if(sessionStorage.getItem('notif_' + curM)) return;
+            
+            // Confetti effect
+            const emojis = ['💰', '✨', '🐾', '🔥', '💎', '🐈', '🐱'];
+            for(let i=0; i<30; i++) {
+                const c = document.createElement('div');
+                c.className = 'confetti';
+                c.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+                c.style.left = Math.random() * 100 + 'vw';
+                c.style.animationDelay = Math.random() * 2 + 's';
+                document.body.appendChild(c);
+                setTimeout(() => c.remove(), 3000);
+            }
+
+            // Pop-up
+            const pop = document.createElement('div');
+            pop.style = "position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:var(--card); border:3px solid var(--accent); padding:30px; border-radius:20px; z-index:1000; text-align:center; box-shadow:0 0 50px #000; animation:popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);";
+            pop.innerHTML = `<h2 style="color:var(--accent); margin:0; font-family:'Poppins';">MISSION ACCOMPLISHED!</h2><p style="color:#fff; font-size:14px;">Savings for ${curM} are secured. Oss! 🥷</p><button onclick="this.parentElement.remove()" style="background:var(--accent); border:none; padding:10px 25px; border-radius:10px; font-weight:900; cursor:pointer; margin-top:10px;">RECEIVE REWARD</button>`;
+            document.body.appendChild(pop);
+            
+            new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3').play();
+            sessionStorage.setItem('notif_' + curM, 'true');
+        }
+
+        function resetMonth() { if(confirm("Reset checks for this month?")) { data5.forEach(i=>i.checked=false); data19.forEach(i=>i.checked=false); sessionStorage.removeItem('notif_'+curM); render(); } }
+
+        window.onload = () => {
+            const t = localStorage.getItem('app_theme'), f = localStorage.getItem('app_font');
+            if(t) { document.getElementById('setTheme').value=t; applySettings(); }
+            if(f) { document.getElementById('setFont').value=f; applySettings(); }
+            loadData();
+        }
+    </script>
+</body>
+</html>
